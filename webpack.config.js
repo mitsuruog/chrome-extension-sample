@@ -20,9 +20,9 @@ if (fileSystem.existsSync(secretsPath)) {
 
 var options = {
   entry: {
-    popup: path.join(__dirname, "src", "js", "popup.js"),
-    options: path.join(__dirname, "src", "js", "options.js"),
-    background: path.join(__dirname, "src", "js", "background.js")
+    popup: path.join(__dirname, "src", "js", "popup.tsx"),
+    options: path.join(__dirname, "src", "js", "options.ts"),
+    background: path.join(__dirname, "src", "js", "background.ts")
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -44,11 +44,17 @@ var options = {
         test: /\.html$/,
         loader: "html-loader",
         exclude: /node_modules/
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader",
+        exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    extensions: [".ts", ".tsx", ".js", ".json"]
   },
   plugins: [
     // clean the build folder
@@ -58,7 +64,7 @@ var options = {
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
     }),
     new CopyWebpackPlugin([{
-      from: "src/manifest.json",
+      from: "./src/manifest.json",
       transform: function (content, path) {
         // generates the manifest file using the package.json informations
         return Buffer.from(JSON.stringify({
